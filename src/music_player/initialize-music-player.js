@@ -4,9 +4,10 @@ const auth = require(__basedir + "/auth.json");
 
 module.exports = function(client) {
   client.player = new Player(client, {
-    leaveOnEnd: false,
+    leaveOnEnd: true,
     leaveOnStop: false,
-    leaveOnEmpty: false,
+    leaveOnEmpty: true,
+    timeout: 300000,
     ytdlRequestOptions:  {
       headers: {
         cookie: auth["youtubeCookie"],
