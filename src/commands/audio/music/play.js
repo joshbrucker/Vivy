@@ -4,12 +4,12 @@ const isUrl = require("is-url");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("play")
-    .setDescription("Searches for a song or playlist plays it in voice.")
-    .addStringOption(option =>
-      option.setName("search")
-        .setDescription("The song or playlist name that you want to search for.")
-        .setRequired(true)),
+      .setName("play")
+      .setDescription("Searches for a song or playlist plays it in voice.")
+      .addStringOption(option => option
+          .setName("search")
+          .setDescription("The song or playlist name that you want to search for.")
+          .setRequired(true)),
 
   async execute(interaction) {
     await interaction.deferReply();

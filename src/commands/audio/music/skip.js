@@ -2,8 +2,8 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("skip")
-    .setDescription("Skips the currently playing song."),
+      .setName("skip")
+      .setDescription("Skips the currently playing song."),
 
   async execute(interaction) {
     let player = interaction.client.player;

@@ -2,8 +2,8 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("shuffle")
-    .setDescription("Shuffles the queue."),
+      .setName("shuffle")
+      .setDescription("Shuffles the queue."),
 
   async execute(interaction) {
     let player = interaction.client.player;
