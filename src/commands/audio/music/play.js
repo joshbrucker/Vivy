@@ -32,15 +32,12 @@ module.exports = {
         if (search.includes("&list=")) {
           playable = await Utils.playlist(search, DefaultPlayOptions, queue);
         } else {
-          console.log(search);
           playable = await Utils.link(search, DefaultPlayOptions, queue);
-          console.log(playable);
         }
       } else {
         playable = (await Utils.search(search, DefaultPlayOptions, queue))[0];
       }
     } catch (ex) {
-      console.log(ex);
       await interaction.editReply("Cannot find that song/playlist!");
       return;
     }

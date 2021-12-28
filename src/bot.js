@@ -7,6 +7,7 @@ const initializeMusicPlayer = require("./music_player/initialize-music-player.js
 const auth = require("./auth.json");
 
 const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGE_REACTIONS", "GUILD_VOICE_STATES"] });
+global.pagingTimeout = 120000;
 
 initializeMusicPlayer(client);
 

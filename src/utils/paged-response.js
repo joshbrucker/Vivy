@@ -1,4 +1,4 @@
-const {MessageButton, MessageActionRow, MessageEmbed} = require("discord.js");
+const { MessageButton, MessageActionRow, MessageEmbed } = require("discord.js");
 
 const backId = 'back';
 const forwardId = 'forward';
@@ -7,16 +7,24 @@ const forwardId = 'forward';
 let generatePayload = function(data) {
   let options = {};
 
-  if (data instanceof MessageEmbed) {
-    options.embeds = [ data ];
-  } else {
-    options.content = data;
+  let { content, embeds, files } = data;
+
+  if (content) {
+    options.content = content;
   }
+  if (embeds) {
+    options.embeds = embeds;
+  }
+  if (files) {
+    options.files = files;
+  }
+
   return options;
 }
 
 let sendPagedResponse = async function(interaction, pageData, timeout) {
   if (pageData.length === 1) {
+    await interaction.reply({...generatePayload(pageData[0])});
     return;
   }
 
@@ -76,7 +84,4 @@ let sendPagedResponse = async function(interaction, pageData, timeout) {
   });
 }
 
-module.exports = {
-  sendPagedResponse
-};
-
+module.exports = sendPagedResponse;

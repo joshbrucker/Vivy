@@ -7,7 +7,7 @@ module.exports = function(client) {
     leaveOnEnd: true,
     leaveOnStop: false,
     leaveOnEmpty: true,
-    timeout: 300000,
+    timeout: 600000,
     ytdlRequestOptions:  {
       headers: {
         cookie: auth["youtubeCookie"],
