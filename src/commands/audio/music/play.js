@@ -13,6 +13,10 @@ module.exports = {
       .addBooleanOption(option => option
           .setName("top")
           .setDescription("Whether the song should be added to the top of the queue.")
+          .setRequired(false))
+      .addBooleanOption(option => option
+          .setName("shuffle")
+          .setDescription("Only applies to playlists. Shuffles the playlist when adding to the queue.")
           .setRequired(false)),
 
   async execute(interaction) {
@@ -20,6 +24,7 @@ module.exports = {
 
     let search = interaction.options.get("search").value;
     let atTop = interaction.options.get("top") ? interaction.options.get("top").value : false;
+    let shuffle = interaction.options.get("shuffle") ? interaction.options.get("shuffle").value : false;
 
     let player = interaction.client.player;
     let guild = interaction.guild;
@@ -36,7 +41,7 @@ module.exports = {
     try {
       if (isUrl(search)) {
         if (search.includes("&list=")) {
-          playable = await Utils.playlist(search, DefaultPlaylistOptions, queue);
+          playable = await Utils.playlist(search, {...DefaultPlaylistOptions, shuffle: shuffle }, queue);
         } else {
           playable = await Utils.link(search, DefaultPlayOptions, queue);
         }
@@ -49,22 +54,24 @@ module.exports = {
     }
 
     // try to play the playable
+    let queueOptions = { index: queue.isPlaying && atTop ? 0 : -1};
+
     if (playable) {
       if (playable instanceof Playlist) {
-        await queue.playlist(playable, queue.isPlaying && atTop ? { index: 0 } : DefaultPlaylistOptions).catch(_ => {
+        await queue.playlist(playable, queueOptions).catch(_ => {
           interaction.editReply("Error playing playlist!");
         });
-        await interaction.editReply(`Added **${playable.name}"** to the ${atTop ? "top of the " : ""}queue (${playable.songs.length} songs)!`);
-      } else if (playable instanceof Song) {
-        await queue.play(playable, queue.isPlaying && atTop ? { index: 0 } : DefaultPlayOptions).catch(_ => {
+        await interaction.editReply(`Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue (${playable.songs.length} songs)!`);
+      } else {
+        await queue.play(playable, queueOptions).catch(_ => {
           interaction.editReply("Error playing song!");
         });
 
-        if (queue.isPlaying) {
-          await interaction.editReply(`Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue!`);
-        } else {
-          await interaction.editReply("Now playing **" + playable.name + "**!");
-        }
+        await interaction.editReply(
+          queue.isPlaying ?
+          `Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue!` :
+          `Now playing **${playable.name}"**!`
+        );
       }
     } else {
       await interaction.editReply("Cannot find that song/playlist!");
