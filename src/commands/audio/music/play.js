@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { Utils, DefaultPlayOptions, Playlist, Song } = require("discord-music-player");
+const { Utils, DefaultPlayOptions, DefaultPlaylistOptions, Playlist, Song } = require("discord-music-player");
 const isUrl = require("is-url");
 
 module.exports = {
@@ -9,12 +9,18 @@ module.exports = {
       .addStringOption(option => option
           .setName("search")
           .setDescription("The song or playlist name that you want to search for.")
-          .setRequired(true)),
+          .setRequired(true))
+      .addBooleanOption(option => option
+          .setName("top")
+          .setDescription("Whether the song should be added to the top of the queue.")
+          .setRequired(false)),
 
   async execute(interaction) {
     await interaction.deferReply();
 
     let search = interaction.options.get("search").value;
+    let atTop = interaction.options.get("top") ? interaction.options.get("top").value : false;
+
     let player = interaction.client.player;
     let guild = interaction.guild;
 
@@ -30,7 +36,7 @@ module.exports = {
     try {
       if (isUrl(search)) {
         if (search.includes("&list=")) {
-          playable = await Utils.playlist(search, DefaultPlayOptions, queue);
+          playable = await Utils.playlist(search, DefaultPlaylistOptions, queue);
         } else {
           playable = await Utils.link(search, DefaultPlayOptions, queue);
         }
@@ -44,21 +50,21 @@ module.exports = {
 
     // try to play the playable
     if (playable) {
-      if (queue.isPlaying || playable instanceof Playlist) {
-        let songCount = (playable.songs) ? " (" + playable.songs.length + " songs)" : "";
-        await interaction.editReply("Adding **" + playable.name + "** to the queue" + songCount);
-      } else {
-        await interaction.editReply("Now playing **" + playable.name + "**!");
-      }
-
       if (playable instanceof Playlist) {
-        await queue.playlist(playable).catch(_ => {
+        await queue.playlist(playable, queue.isPlaying && atTop ? { index: 0 } : DefaultPlaylistOptions).catch(_ => {
           interaction.editReply("Error playing playlist!");
         });
+        await interaction.editReply(`Added **${playable.name}"** to the ${atTop ? "top of the " : ""}queue (${playable.songs.length} songs)!`);
       } else if (playable instanceof Song) {
-        await queue.play(playable).catch(_ => {
+        await queue.play(playable, queue.isPlaying && atTop ? { index: 0 } : DefaultPlayOptions).catch(_ => {
           interaction.editReply("Error playing song!");
         });
+
+        if (queue.isPlaying) {
+          await interaction.editReply(`Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue!`);
+        } else {
+          await interaction.editReply("Now playing **" + playable.name + "**!");
+        }
       }
     } else {
       await interaction.editReply("Cannot find that song/playlist!");
