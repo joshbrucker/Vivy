@@ -3,20 +3,10 @@ const { MessageButton, MessageActionRow, MessageEmbed } = require("discord.js");
 const backId = 'back';
 const forwardId = 'forward';
 
-// can accept an embed or a string message
+// ensures that content/embeds do not persist
 let generatePayload = function(data) {
-  let options = {};
-
   let { content, embeds } = data;
-
-  if (content) {
-    options.content = content;
-  }
-  if (embeds) {
-    options.embeds = embeds;
-  }
-
-  return options;
+  return { content: content || null, embeds: embeds || null };
 }
 
 let sendPagedResponse = async function(interaction, pageData, attachments=[], timeout=120000) {
