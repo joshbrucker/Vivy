@@ -55,11 +55,11 @@ module.exports = {
         addPage();
       }
 
-      await sendPagedResponse(interaction, pagedResponseData, global.pagingTimeout);
+      await sendPagedResponse(interaction, pagedResponseData, [__basedir + "/resources/images/vivy_head.png"]);
 
       function addPage() {
         currentPage.setDescription(pageText);
-        pagedResponseData.push({ embeds: [currentPage], files: [__basedir + "/resources/images/vivy_head.png"] });
+        pagedResponseData.push({ embeds: [currentPage] });
         pageText = "";
         currentPage = generateQueueEmbed();
       }

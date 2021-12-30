@@ -7,7 +7,7 @@ const forwardId = 'forward';
 let generatePayload = function(data) {
   let options = {};
 
-  let { content, embeds, files } = data;
+  let { content, embeds } = data;
 
   if (content) {
     options.content = content;
@@ -15,14 +15,11 @@ let generatePayload = function(data) {
   if (embeds) {
     options.embeds = embeds;
   }
-  if (files) {
-    options.files = files;
-  }
 
   return options;
 }
 
-let sendPagedResponse = async function(interaction, pageData, timeout) {
+let sendPagedResponse = async function(interaction, pageData, attachments=[], timeout=120000) {
   if (pageData.length === 1) {
     await interaction.reply({...generatePayload(pageData[0])});
     return;
@@ -41,6 +38,7 @@ let sendPagedResponse = async function(interaction, pageData, timeout) {
 
   let embed = await interaction.reply({
     ...generatePayload(pageData[0]),
+    files: attachments,
     components: [new MessageActionRow({components: [forwardButton]})],
     fetchReply: true
   });
