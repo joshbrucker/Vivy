@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { Utils, DefaultPlayOptions, DefaultPlaylistOptions, Playlist, Song } = require("discord-music-player");
-const isUrl = require("is-url");
+
+const utils = require(__basedir + "/utils/utils");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -38,43 +39,44 @@ module.exports = {
 
     // search for a playable, given a search query
     let playable;
+    let isPlaylist = utils.isPlaylist(search);
     try {
-      if (isUrl(search)) {
-        if (search.includes("&list=")) {
-          playable = await Utils.playlist(search, {...DefaultPlaylistOptions, shuffle: shuffle }, queue);
-        } else {
-          playable = await Utils.link(search, DefaultPlayOptions, queue);
-        }
-      } else {
-        playable = (await Utils.search(search, DefaultPlayOptions, queue))[0];
+      playable = isPlaylist ?
+        await Utils.playlist(search, {...DefaultPlaylistOptions, shuffle: shuffle }, queue) :
+        await Utils.best(search, DefaultPlayOptions, queue);
+    } finally {
+      if (!playable) {
+        await interaction.editReply(`Cannot find that ${isPlaylist ? "playlist" : "song"}!`);
+        return;
       }
-    } catch (ex) {
-      await interaction.editReply("Cannot find that song/playlist!");
-      return;
     }
 
     // try to play the playable
-    let queueOptions = { index: queue.isPlaying && atTop ? 0 : -1};
+    let queueOptions = { index: queue.isPlaying && atTop ? 0 : -1 };
 
-    if (playable) {
-      if (playable instanceof Playlist) {
-        await queue.playlist(playable, queueOptions).catch(_ => {
-          interaction.editReply("Error playing playlist!");
-        });
-        await interaction.editReply(`Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue (${playable.songs.length} songs)!`);
-      } else {
-        await queue.play(playable, queueOptions).catch(_ => {
-          interaction.editReply("Error playing song!");
-        });
-
-        await interaction.editReply(
-          queue.isPlaying ?
-          `Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue!` :
-          `Now playing **${playable.name}"**!`
-        );
+    if (playable instanceof Playlist) {
+      if (!playable.songs || playable.songs.length === 0) {
+        await interaction.editReply("Playlist is empty!");
+        return;
       }
+
+      await queue.playlist(playable, queueOptions).catch(_ => {
+        interaction.editReply("Error playing playlist!");
+      });
+
+      await interaction.editReply(`Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue (${playable.songs.length} songs)!`);
+    } else if (playable instanceof Song) {
+      await queue.play(playable, queueOptions).catch(_ => {
+        interaction.editReply("Error playing song!");
+      });
+
+      await interaction.editReply(
+        queue.isPlaying ?
+        `Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue!` :
+        `Now playing **${playable.name}"**!`
+      );
     } else {
-      await interaction.editReply("Cannot find that song/playlist!");
+      interaction.editReply(`Could not play ${isPlaylist ? "playlist" : "song"}`);
     }
   },
 };

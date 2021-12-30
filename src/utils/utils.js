@@ -1,4 +1,5 @@
 const auth = require(__basedir + "/auth.json");
+const { Utils } = require("discord-music-player");
 
 function escapeMarkdown(text) {
   return text.replace(/((\_|\*|\~|\`|\|){2})/g, '\\$1');
@@ -17,6 +18,12 @@ function getMonthName(num) {
   }
 }
 
+function isPlaylist(search) {
+  return Utils.regexList.SpotifyPlaylist.test(search) ||
+      Utils.regexList.YouTubePlaylist.test(search) ||
+      Utils.regexList.ApplePlaylist.test(search);
+}
+
 function random(num) {
   return Math.floor(Math.random() * num);
 }
@@ -28,6 +35,7 @@ function sleep(milliseconds) {
 module.exports = {
   escapeMarkdown: escapeMarkdown,
   getMonthName: getMonthName,
+  isPlaylist: isPlaylist,
   random: random,
   sleep: sleep,
 };
