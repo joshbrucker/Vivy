@@ -73,7 +73,7 @@ module.exports = {
       await interaction.editReply(
         queue.isPlaying ?
         `Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue!` :
-        `Now playing **${playable.name}"**!`
+        `Now playing **${playable.name}**!`
       );
     } else {
       interaction.editReply(`Could not play ${isPlaylist ? "playlist" : "song"}`);

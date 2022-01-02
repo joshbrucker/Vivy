@@ -13,7 +13,7 @@ module.exports = async (interaction, queue) => {
   let currentPage = generateQueueEmbed();
 
   for (let i = 0; i < songs.length; i++) {
-    if (i % SONGS_PER_PAGE == 0 && pageText.length != 0) {
+    if (i % SONGS_PER_PAGE === 0 && pageText.length !== 0) {
       addPage();
     }
 
@@ -24,7 +24,7 @@ module.exports = async (interaction, queue) => {
     }
   }
 
-  if (pageText.length != 0) {
+  if (pageText.length !== 0) {
     addPage();
   }
 
