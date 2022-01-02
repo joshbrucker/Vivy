@@ -1,7 +1,7 @@
 const { MessageButton, MessageActionRow, MessageEmbed } = require("discord.js");
 
-const backId = 'back';
-const forwardId = 'forward';
+const backId = "back";
+const forwardId = "forward";
 
 // ensures that content/embeds do not persist
 let generatePayload = function(data) {
@@ -10,26 +10,21 @@ let generatePayload = function(data) {
 }
 
 let sendPagedResponse = async function(interaction, pageData, attachments=[], timeout=120000) {
-  if (pageData.length === 1) {
-    await interaction.reply({...generatePayload(pageData[0])});
-    return;
-  }
-
   const backButton = new MessageButton({
-    style: 'SECONDARY',
-    emoji: '◀️',
+    style: "SECONDARY",
+    emoji: "◀️",
     customId: backId
   });
   const forwardButton = new MessageButton({
-    style: 'SECONDARY',
-    emoji: '▶️',
+    style: "SECONDARY",
+    emoji: "▶️",
     customId: forwardId
   });
 
   let embed = await interaction.reply({
     ...generatePayload(pageData[0]),
     files: attachments,
-    components: [new MessageActionRow({components: [forwardButton]})],
+    components: pageData.length > 1 ? [new MessageActionRow({components: [forwardButton]})] : [],
     fetchReply: true
   });
 
