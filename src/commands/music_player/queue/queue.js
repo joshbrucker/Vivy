@@ -35,7 +35,7 @@ module.exports = {
 
     const queue = player.getQueue(guild.id);
 
-    if (!queue) {
+    if (!queue || !queue.songs || queue.songs.length === 0) {
       await interaction.reply("There is nothing playing!");
       return;
     }
