@@ -39,7 +39,7 @@ module.exports = async (interaction, queue) => {
 
   function generateQueueEmbed() {
     return new MessageEmbed()
-        .setTitle("Music Queue")
+        .setTitle(`Music Queue (${songs.length - 1} songs)`)
         .setFooter("\u200b\nFulfilling my mission ❤️")
         .setThumbnail("attachment://vivy_head.png")
         .setColor(colors.vivy);
