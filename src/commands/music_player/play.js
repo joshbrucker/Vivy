@@ -21,6 +21,11 @@ module.exports = {
           .setRequired(false)),
 
   async execute(interaction) {
+    if (!interaction.member.voice.channel) {
+      await interaction.reply("You must be in voice to use this command!");
+      return;
+    }
+
     await interaction.deferReply();
 
     let search = interaction.options.get("search").value;

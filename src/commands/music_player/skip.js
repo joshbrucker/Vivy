@@ -6,6 +6,11 @@ module.exports = {
       .setDescription("Skips the currently playing song."),
 
   async execute(interaction) {
+    if (!interaction.member.voice.channel) {
+      await interaction.reply("You must be in voice to use this command!");
+      return;
+    }
+
     let player = interaction.client.player;
     let guild = interaction.guild;
 
