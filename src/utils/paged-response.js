@@ -3,13 +3,21 @@ const { MessageButton, MessageActionRow, MessageEmbed } = require("discord.js");
 const backId = "back";
 const forwardId = "forward";
 
-// ensures that content/embeds do not persist
+// ensures that content/embeds do not persist across pages
 let generatePayload = function(data) {
   let { content, embeds } = data;
   return { content: content || null, embeds: embeds || null };
 }
 
 let sendPagedResponse = async function(interaction, pageData, attachments=[], timeout=120000) {
+  if (pageData.length === 1) {
+    await interaction.reply({
+      ...generatePayload(pageData[0]),
+      files: attachments
+    });
+    return;
+  }
+
   const backButton = new MessageButton({
     style: "SECONDARY",
     emoji: "◀️",
