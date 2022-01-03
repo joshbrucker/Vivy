@@ -3,8 +3,8 @@ const { escapeMarkdown } = require(__basedir + "/utils/utils");
 module.exports = async (interaction, queue) => {
   const songs = queue.songs;
 
-  if (songs.length === 1) {
-    await interaction.reply("There is nothing to remove from the queue!");
+  if (songs.length <= 1) {
+    await interaction.reply("There is nothing in the queue!");
     return;
   }
 
