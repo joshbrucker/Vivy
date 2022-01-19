@@ -22,5 +22,5 @@ module.exports = async (interaction, queue) => {
   queue.songs[first] = queue.songs[second];
   queue.songs[second] = temp;
 
-  await interaction.reply(`Successfully swapped songs!`);
-}
+  await interaction.reply("Successfully swapped songs!");
+};

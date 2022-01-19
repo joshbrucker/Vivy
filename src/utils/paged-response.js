@@ -7,7 +7,7 @@ const forwardId = "forward";
 let generatePayload = function(data) {
   let { content, embeds } = data;
   return { content: content || null, embeds: embeds || null };
-}
+};
 
 let sendPagedResponse = async function(interaction, pageData, attachments=[], timeout=120000) {
   if (pageData.length === 1) {
@@ -38,13 +38,18 @@ let sendPagedResponse = async function(interaction, pageData, attachments=[], ti
 
   const collector = embed.createMessageComponentCollector({
     time: timeout
-  })
+  });
 
-  let currentIndex = 0
+  let currentIndex = 0;
   collector.on("collect", async interaction => {
     collector.resetTimer();
 
-    interaction.customId === backId ? (currentIndex -= 1) : (currentIndex += 1)
+    if (interaction.customId === backId) {
+      currentIndex -= 1;
+    } else {
+      currentIndex += 1;
+    }
+
     await interaction.update({
       ...generatePayload(pageData[currentIndex]),
       components: [
@@ -56,7 +61,7 @@ let sendPagedResponse = async function(interaction, pageData, attachments=[], ti
         })
       ]
     });
-  })
+  });
 
   collector.on("end", async () => {
     backButton.disabled = true;
@@ -73,6 +78,6 @@ let sendPagedResponse = async function(interaction, pageData, attachments=[], ti
       ]
     });
   });
-}
+};
 
 module.exports = sendPagedResponse;

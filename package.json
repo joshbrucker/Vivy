@@ -19,6 +19,7 @@
   "dependencies": {
     "@discordjs/rest": "^0.2.0-canary.0",
     "discord-music-player": "^8.3.1",
-    "discord.js": "^13.3.1"
+    "discord.js": "^13.3.1",
+    "ytdl-core": "^4.10.0"
   }
 }
