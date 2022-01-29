@@ -5,8 +5,7 @@ const forwardId = "forward";
 
 // ensures that content/embeds do not persist across pages
 let generatePayload = function(data) {
-  let { content, embeds } = data;
-  return { content: content || null, embeds: embeds || null };
+  return { content: data.content || null, embeds: data.embeds || null };
 };
 
 let sendPagedResponse = async function(interaction, pageData, attachments=[], timeout=120000) {
