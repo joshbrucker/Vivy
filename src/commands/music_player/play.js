@@ -1,3 +1,4 @@
+const { Permissions } = require('discord.js');
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { Utils, DefaultPlayOptions, DefaultPlaylistOptions, Playlist, Song } = require("discord-music-player");
 
@@ -21,8 +22,24 @@ module.exports = {
           .setRequired(false)),
 
   async execute(interaction) {
-    if (!interaction.member.voice.channel) {
+    let voiceChannel = interaction.member.voice.channel;
+    if (!voiceChannel) {
       await interaction.reply("You must be in voice to use this command!");
+      return;
+    }
+
+    if (!voiceChannel.permissionsFor(interaction.guild.me).has(Permissions.FLAGS.VIEW_CHANNEL)) {
+      await interaction.reply("I don't have permission to **view** this voice channel!");
+      return;
+    }
+
+    if (!voiceChannel.permissionsFor(interaction.guild.me).has(Permissions.FLAGS.CONNECT)) {
+      await interaction.reply("I don't have permission to **join** this voice channel!");
+      return;
+    }
+
+    if (!voiceChannel.permissionsFor(interaction.guild.me).has(Permissions.FLAGS.SPEAK)) {
+      await interaction.reply("I don't have permission to **speak** in this voice channel!");
       return;
     }
 
