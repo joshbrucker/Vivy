@@ -20,7 +20,7 @@ module.exports = {
     const guild = interaction.guild;
     const queue = player.getQueue(guild.id);
 
-    if (!queue || !queue.songs || queue.songs.length === 0) {
+    if (!queue || !queue.isPlaying) {
       await interaction.reply("There is nothing playing!");
       return;
     }

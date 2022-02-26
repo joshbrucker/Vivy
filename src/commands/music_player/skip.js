@@ -13,18 +13,18 @@ module.exports = {
 
     let player = interaction.client.player;
     let guild = interaction.guild;
+    let queue = player.getQueue(guild.id);
 
-    let guildQueue = player.getQueue(guild.id);
+    if (!queue || !queue.isPlaying) {
+      await interaction.reply("There is nothing playing!");
+      return;
+    }
 
-    if (guildQueue && guildQueue.isPlaying) {
-      await guildQueue.skip();
-      if (guildQueue.songs.length > 1)  {
-        interaction.reply(`Skipping song... Now playing **${guildQueue.songs[1]}**`);
-      } else {
-        interaction.reply("Skipping song... Reached end of queue!");
-      }
+    await queue.skip();
+    if (queue.songs.length > 1)  {
+      interaction.reply(`Skipping song... Now playing **${queue.songs[1]}**`);
     } else {
-      interaction.reply("Nothing to skip!");
+      interaction.reply("Skipping song... Reached end of queue!");
     }
   }
 };
