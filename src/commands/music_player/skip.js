@@ -18,7 +18,7 @@ module.exports = {
 
     if (guildQueue && guildQueue.isPlaying) {
       await guildQueue.skip();
-      if (guildQueue.length > 1)  {
+      if (guildQueue.songs.length > 1)  {
         interaction.reply(`Skipping song... Now playing **${guildQueue.songs[1]}**`);
       } else {
         interaction.reply("Skipping song... Reached end of queue!");
