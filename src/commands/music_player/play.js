@@ -68,7 +68,9 @@ module.exports = {
         await Utils.best(search, DefaultPlayOptions, queue);
     } finally {
       if (!playable) {
-        await interaction.editReply(`Cannot find that ${isPlaylist ? "playlist" : "song"}!`);
+        await interaction.editReply(`Cannot find that ${isPlaylist ? "playlist" : "song"}!`).catch(err => {
+          if (err.message !== "Unknown Message") throw err;
+        });
         return;
       }
     }
@@ -76,29 +78,43 @@ module.exports = {
     // try to play the playable
     let queueOptions = { index: queue.isPlaying && atTop ? 0 : -1 };
 
+
     if (playable instanceof Playlist) {
       if (!playable.songs || playable.songs.length === 0) {
-        await interaction.editReply("Playlist is empty!");
+        await interaction.editReply("Playlist is empty!").catch(err => {
+          if (err.message !== "Unknown Message") throw err;
+        });
         return;
       }
 
-      await queue.playlist(playable, queueOptions).catch(_ => {
-        interaction.editReply("Error playing playlist!");
+      await queue.playlist(playable, queueOptions).catch(err => {
+        interaction.editReply("Error playing playlist!").catch(err => {
+          if (err.message !== "Unknown Message") throw err;
+        });
+        throw err;
       });
 
-      await interaction.editReply(`Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue (${playable.songs.length} songs)!`);
+      interaction.editReply(`Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue (${playable.songs.length} songs)!`).catch(err => {
+        if (err.message !== "Unknown Message") throw err;
+      });
     } else if (playable instanceof Song) {
       await queue.play(playable, queueOptions).catch(_ => {
-        interaction.editReply("Error playing song!");
+        interaction.editReply("Error playing song!").catch(err => {
+          if (err.message !== "Unknown Message") throw err;
+        });
       });
 
       await interaction.editReply(
         queue.isPlaying ?
         `Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue!` :
         `Now playing **${playable.name}**!`
-      );
+      ).catch(err => {
+        if (err.message !== "Unknown Message") throw err;
+      });
     } else {
-      interaction.editReply(`Could not play ${isPlaylist ? "playlist" : "song"}`);
+      await interaction.editReply(`Could not play ${isPlaylist ? "playlist" : "song"}`).catch(err => {
+        if (err.message !== "Unknown Message") throw err;
+      });
     }
   },
 };

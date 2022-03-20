@@ -40,16 +40,16 @@ let sendPagedResponse = async function(interaction, pageData, attachments=[], ti
   });
 
   let currentIndex = 0;
-  collector.on("collect", async interaction => {
+  collector.on("collect", async buttonInteraction => {
     collector.resetTimer();
 
-    if (interaction.customId === backId) {
+    if (buttonInteraction.customId === backId) {
       currentIndex -= 1;
     } else {
       currentIndex += 1;
     }
 
-    await interaction.update({
+    await buttonInteraction.update({
       ...generatePayload(pageData[currentIndex]),
       components: [
         new MessageActionRow({
@@ -59,6 +59,8 @@ let sendPagedResponse = async function(interaction, pageData, attachments=[], ti
           ]
         })
       ]
+    }).catch(err => {
+      if (err.message !== "Unknown Message") throw err;
     });
   });
 
@@ -75,6 +77,8 @@ let sendPagedResponse = async function(interaction, pageData, attachments=[], ti
           ]
         })
       ]
+    }).catch(err => {
+      if (err.message !== "Unknown Message") throw err;
     });
   });
 };
