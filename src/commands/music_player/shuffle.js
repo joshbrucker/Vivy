@@ -6,11 +6,11 @@ module.exports = {
       .setDescription("Shuffles the queue."),
 
   async execute(interaction) {
-    const player = interaction.client.player;
-    const guild = interaction.guild;
-    const queue = player.getQueue(guild.id);
+    let player = interaction.client.player;
+    let guild = interaction.guild;
+    let queue = player.getQueue(guild.id);
 
-    if (!queue || !queue.isPlaying) {
+    if (!queue || !queue.songs || queue.songs.length === 0) {
       await interaction.reply("There is nothing playing!");
       return;
     }

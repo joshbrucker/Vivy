@@ -76,7 +76,7 @@ module.exports = {
     }
 
     // try to play the playable
-    let queueOptions = { index: queue.isPlaying && atTop ? 0 : -1 };
+    let queueOptions = { index: (queue.songs && queue.songs.length > 0 && atTop) ? 0 : -1 };
 
 
     if (playable instanceof Playlist) {
@@ -105,9 +105,9 @@ module.exports = {
       });
 
       await interaction.editReply(
-        queue.isPlaying ?
-        `Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue!` :
-        `Now playing **${playable.name}**!`
+        (queue.songs && queue.songs.length === 1) ?
+        `Now playing **${playable.name}**!` :
+        `Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue!`
       ).catch(err => {
         if (err.message !== "Unknown Message") throw err;
       });

@@ -11,17 +11,18 @@ module.exports = {
       .setDescription("Shows the queue."),
 
   async execute(interaction) {
-    const player = interaction.client.player;
-    const guild = interaction.guild;
-    const queue = player.getQueue(guild.id);
+    const SONGS_PER_PAGE = 6;
 
-    if (!queue || !queue.isPlaying) {
+    let player = interaction.client.player;
+    let guild = interaction.guild;
+    let queue = player.getQueue(guild.id);
+
+    if (!queue || !queue.songs || queue.songs.length === 0) {
       await interaction.reply("There is nothing playing!");
       return;
     }
 
-    const SONGS_PER_PAGE = 6;
-    const songs = queue.songs;
+    let songs = queue.songs;
 
     let pagedResponseData = [];
     let pageDescription = `**Now Playing**: [${escapeMarkdown(songs[0].name)}](${songs[0].url})\n\n`;
