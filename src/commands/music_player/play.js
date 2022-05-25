@@ -1,4 +1,5 @@
 const { Permissions } = require('discord.js');
+const { safeChanges } = require("@joshbrucker/discordjs-utils");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { Utils, DefaultPlayOptions, DefaultPlaylistOptions, Playlist, Song } = require("discord-music-player");
 
@@ -68,9 +69,7 @@ module.exports = {
         await Utils.best(search, DefaultPlayOptions, queue);
     } finally {
       if (!playable) {
-        await interaction.editReply(`Cannot find that ${isPlaylist ? "playlist" : "song"}!`).catch(err => {
-          if (err.message !== "Unknown Message") throw err;
-        });
+        await safeChanges.editReply(interaction, `Cannot find that ${isPlaylist ? "playlist" : "song"}!`);
         return;
       }
     }
@@ -81,40 +80,29 @@ module.exports = {
 
     if (playable instanceof Playlist) {
       if (!playable.songs || playable.songs.length === 0) {
-        await interaction.editReply("Playlist is empty!").catch(err => {
-          if (err.message !== "Unknown Message") throw err;
-        });
+        await safeChanges.editReply(interaction, "Playlist is empty!");
         return;
       }
 
-      await queue.playlist(playable, queueOptions).catch(err => {
-        interaction.editReply("Error playing playlist!").catch(err => {
-          if (err.message !== "Unknown Message") throw err;
-        });
-        throw err;
-      });
-
-      interaction.editReply(`Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue (${playable.songs.length} songs)!`).catch(err => {
-        if (err.message !== "Unknown Message") throw err;
-      });
+      try {
+        await queue.playlist(playable, queueOptions);
+        await safeChanges.editReply(interaction, `Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue (${playable.songs.length} songs)!`);
+      } catch (err) {
+        await safeChanges.editReply(interaction, "Error playing playlist!");
+      }
     } else if (playable instanceof Song) {
-      await queue.play(playable, queueOptions).catch(_ => {
-        interaction.editReply("Error playing song!").catch(err => {
-          if (err.message !== "Unknown Message") throw err;
-        });
-      });
-
-      await interaction.editReply(
-        (queue.songs && queue.songs.length === 1) ?
-        `Now playing **${playable.name}**!` :
-        `Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue!`
-      ).catch(err => {
-        if (err.message !== "Unknown Message") throw err;
-      });
+      try {
+        await queue.play(playable, queueOptions);
+        await safeChanges.editReply(interaction,
+          (queue.songs && queue.songs.length === 1) ?
+          `Now playing **${playable.name}**!` :
+          `Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue!`
+        );
+      } catch (err) {
+        await safeChanges.editReply(interaction, "Error playing song!");
+      }
     } else {
-      await interaction.editReply(`Could not play ${isPlaylist ? "playlist" : "song"}`).catch(err => {
-        if (err.message !== "Unknown Message") throw err;
-      });
+      await safeChanges.editReply(interaction, `Could not play ${isPlaylist ? "playlist" : "song"}`);
     }
   },
 };

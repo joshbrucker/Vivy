@@ -1,8 +1,8 @@
 const { MessageEmbed } = require("discord.js");
+const { PagedEmbed } = require("@joshbrucker/discordjs-utils");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const colors = require(__basedir + "/resources/colors.json");
-const sendPagedResponse = require(__basedir + "/utils/paged-response");
 const { escapeMarkdown } = require(__basedir + "/utils/utils");
 
 module.exports = {
@@ -40,19 +40,15 @@ module.exports = {
       }
     }
 
-    await sendPagedResponse(interaction, pagedResponseData, [__basedir + "/resources/images/vivy_head.png"]);
+    await new PagedEmbed().send(interaction, pagedResponseData, [__basedir + "/resources/images/vivy_head.png"]);
 
     function generateEmbed(description) {
-      return {
-        embeds:[
-          new MessageEmbed()
-              .setTitle(`Music Queue (${songs.length - 1} songs)`)
-              .setDescription(description)
-              .setFooter("\u200b\nFulfilling my mission ❤️")
-              .setThumbnail("attachment://vivy_head.png")
-              .setColor(colors.vivy)
-        ]
-      };
+      return new MessageEmbed()
+          .setTitle(`Music Queue (${songs.length - 1} songs)`)
+          .setDescription(description)
+          .setFooter({ text: "   •   Fulfilling my mission ❤️" })
+          .setThumbnail("attachment://vivy_head.png")
+          .setColor(colors.vivy)
     }
   }
 };

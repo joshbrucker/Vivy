@@ -1,4 +1,3 @@
-const auth = require(__basedir + "/auth.json");
 const { Utils } = require("discord-music-player");
 
 function escapeMarkdown(text) {
@@ -24,18 +23,13 @@ function isPlaylist(search) {
       Utils.regexList.ApplePlaylist.test(search);
 }
 
-function random(num) {
+async function random(num) {
   return Math.floor(Math.random() * num);
 }
 
-function sleep(milliseconds) {
-  return new Promise(resolve => setTimeout(resolve, milliseconds))
-}
-
 module.exports = {
-  escapeMarkdown: escapeMarkdown,
-  getMonthName: getMonthName,
-  isPlaylist: isPlaylist,
-  random: random,
-  sleep: sleep,
+  escapeMarkdown,
+  getMonthName,
+  isPlaylist,
+  random
 };
