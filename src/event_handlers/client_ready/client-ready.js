@@ -9,7 +9,6 @@ function onClientReady(client) {
   const commandJSONs = Commands.map(command => command.data);
 
   rest.put(Routes.applicationCommands(client.user.id), { body: commandJSONs })
-      .then(() => console.log("Successfully registered application commands."))
       .catch(console.error);
 
   console.log("I'm ready to perform~!");
