@@ -26,6 +26,6 @@ module.exports = {
     }
 
     await queue.setPaused(true);
-    await interaction.reply("Paused the music player!");
+    await interaction.reply("⏸️  Paused the music player!");
   }
 };

@@ -28,7 +28,7 @@ module.exports = {
       await interaction.reply("Invalid queue number!");
       return;
     }
-    await interaction.reply(`Successfully removed **[${index}] ${escapeMarkdown(songs[index].name)}**`);
+    await interaction.reply(`⏏️  Successfully removed **[${index}] ${escapeMarkdown(songs[index].name)}**`);
     queue.remove(index);
   }
 };

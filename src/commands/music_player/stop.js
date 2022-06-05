@@ -21,6 +21,6 @@ module.exports = {
     }
 
     await queue.stop();
-    await interaction.reply("Stopped the music player!");
+    await interaction.reply("⏹️  Stopped the music player!");
   }
 };

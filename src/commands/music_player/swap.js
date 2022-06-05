@@ -41,6 +41,6 @@ module.exports = {
     songs[first] = queue.songs[second];
     songs[second] = temp;
 
-    await interaction.reply("Successfully swapped song positions in the queue!");
+    await interaction.reply("🔄  Successfully swapped song positions in the queue!");
   }
 };

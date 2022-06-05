@@ -86,7 +86,7 @@ module.exports = {
 
       try {
         await queue.playlist(playable, queueOptions);
-        await safeChanges.editReply(interaction, `Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue (${playable.songs.length} songs)!`);
+        await safeChanges.editReply(interaction, `▶️  Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue (${playable.songs.length} songs)!`);
       } catch (err) {
         await safeChanges.editReply(interaction, "Error playing playlist!");
       }
@@ -95,8 +95,8 @@ module.exports = {
         await queue.play(playable, queueOptions);
         await safeChanges.editReply(interaction,
           (queue.songs && queue.songs.length === 1) ?
-          `Now playing **${playable.name}**!` :
-          `Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue!`
+          `▶️  Now playing **${playable.name}**!` :
+          `▶️  Added **${playable.name}** to the ${atTop ? "top of the " : ""}queue!`
         );
       } catch (err) {
         await safeChanges.editReply(interaction, "Error playing song!");

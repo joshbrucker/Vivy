@@ -16,6 +16,6 @@ module.exports = {
     }
 
     queue.shuffle();
-    await interaction.reply("Queue has been shuffled!");
+    await interaction.reply("🔀  Queue has been shuffled!");
   }
 };
