@@ -19,7 +19,7 @@
   "dependencies": {
     "@discordjs/rest": "^0.2.0-canary.0",
     "@joshbrucker/discordjs-utils": "^0.1.1",
-    "discord-music-player": "^8.3.1",
+    "discord-music-player": "^8.3.2",
     "discord.js": "^13.3.1",
     "gm": "^1.23.1",
     "ytdl-core": "^4.11.0"
