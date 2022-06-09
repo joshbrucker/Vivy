@@ -40,7 +40,7 @@ module.exports = {
       }
     }
 
-    await new PagedEmbed().send(interaction, pagedResponseData, [__basedir + "/resources/images/vivy_head.png"]);
+    await new PagedEmbed({ timeout: 300000 }).send(interaction, pagedResponseData, [__basedir + "/resources/images/vivy_head.png"]);
 
     function generateEmbed(description) {
       return new MessageEmbed()

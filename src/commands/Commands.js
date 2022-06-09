@@ -2,6 +2,7 @@ const Discord = require("discord.js");
 
 let Commands = new Discord.Collection();
 
+Commands.set("clear", require("./music_player/clear.js"));
 Commands.set("pause", require("./music_player/pause.js"));
 Commands.set("play", require("./music_player/play.js"));
 Commands.set("queue", require("./music_player/queue.js"));
