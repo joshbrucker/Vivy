@@ -2,8 +2,8 @@ const { Player } = require("discord-music-player");
 
 const auth = require(__basedir + "/auth.json");
 
-module.exports = function(client) {
-  client.player = new Player(client, {
+module.exports = (client) => {
+  let player = new Player(client, {
     leaveOnEnd: true,
     leaveOnStop: false,
     leaveOnEmpty: true,
@@ -15,7 +15,7 @@ module.exports = function(client) {
     }
   });
 
-  client.player
+  player
     .on('channelEmpty',  (queue) => {})
     .on('songAdd',  (queue, song) => {})
     .on('playlistAdd',  (queue, playlist) => {})
@@ -26,4 +26,6 @@ module.exports = function(client) {
     .on('clientDisconnect', (queue) => {})
     .on('clientUndeafen', (queue) => {})
     .on('error', (error, queue) => {});
+
+  return player;
 };
