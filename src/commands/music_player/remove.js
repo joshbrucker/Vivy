@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
-const { escapeMarkdown } = require(__basedir + "/utils/utils");
+const { playableToString } = require(__basedir + "/utils/utils");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -28,7 +28,7 @@ module.exports = {
       await interaction.reply("Invalid queue number!");
       return;
     }
-    await interaction.reply(`⏏️  Successfully removed **[${index}] ${escapeMarkdown(songs[index].name)}**`);
+    await interaction.reply(`⏏️  Successfully removed **[${index}] ${playableToString(songs[index])}**`);
     queue.remove(index);
   }
 };

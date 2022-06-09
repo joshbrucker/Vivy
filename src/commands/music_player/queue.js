@@ -3,7 +3,7 @@ const { PagedEmbed } = require("@joshbrucker/discordjs-utils");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const colors = require(__basedir + "/resources/colors.json");
-const { escapeMarkdown } = require(__basedir + "/utils/utils");
+const { playableToString } = require(__basedir + "/utils/utils.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -25,13 +25,13 @@ module.exports = {
     let songs = queue.songs;
 
     let pagedResponseData = [];
-    let pageDescription = `**Now Playing**: [${escapeMarkdown(songs[0].name)}](${songs[0].url})\n\n`;
+    let pageDescription = `**Now Playing**: ${playableToString(songs[0])}\n\n`;
 
     if (songs.length === 1) {
       pagedResponseData.push(generateEmbed(pageDescription));
     } else {
       for (let i = 1; i < songs.length; i++) {
-        pageDescription += `**[${i}]**  [${escapeMarkdown(songs[i].name)}](${songs[i].url})\n\n`;
+        pageDescription += `**[${i}]**  ${playableToString(songs[i])}\n\n`;
 
         if (i % SONGS_PER_PAGE === 0 || (i + 1) >= songs.length) {
           pagedResponseData.push(generateEmbed(pageDescription));
@@ -44,7 +44,7 @@ module.exports = {
 
     function generateEmbed(description) {
       return new MessageEmbed()
-          .setTitle(`Music Queue (${songs.length - 1} songs)`)
+          .setTitle("Music Queue")
           .setDescription(description)
           .setFooter({ text: "   •   Fulfilling my mission ❤️" })
           .setThumbnail("attachment://vivy_head.png")

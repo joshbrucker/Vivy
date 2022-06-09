@@ -23,6 +23,14 @@ function isPlaylist(search) {
       Utils.regexList.ApplePlaylist.test(search);
 }
 
+function playableToString(playable, includeLink=true) {
+  if (includeLink && playable.url) {
+    return `[${escapeMarkdown(playable.name)}](${playable.url})`;
+  }
+
+  return escapeMarkdown(playable.name);
+}
+
 async function random(num) {
   return Math.floor(Math.random() * num);
 }
@@ -31,5 +39,6 @@ module.exports = {
   escapeMarkdown,
   getMonthName,
   isPlaylist,
-  random
+  random,
+  playableToString
 };

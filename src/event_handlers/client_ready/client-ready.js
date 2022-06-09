@@ -5,7 +5,7 @@ const Commands = require(__basedir + "/commands/Commands.js");
 const auth = require(__basedir + "/auth.json");
 
 function onClientReady(client) {
-  const rest = new REST({ version: "9" }).setToken(auth.token);
+  const rest = new REST({ version: "10" }).setToken(auth.token);
   const commandJSONs = Commands.map(command => command.data);
 
   rest.put(Routes.applicationCommands(client.user.id), { body: commandJSONs })
