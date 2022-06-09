@@ -7,8 +7,8 @@ const utils = require(__basedir + "/utils/utils");
 
 module.exports = {
   data: new SlashCommandBuilder()
-      .setName("play")
-      .setDescription("Searches for a song or playlist plays it in voice.")
+      .setName("playtop")
+      .setDescription("Searches for a song or playlist and inserts it at the top of the queue.")
       .addStringOption(option => option
           .setName("search")
           .setDescription("The song or playlist name that you want to search for.")
@@ -69,6 +69,9 @@ module.exports = {
       }
     }
 
+    // try to play the playable
+    let queueOptions = { index: (queue.songs && queue.songs.length > 0) ? 0 : -1 };
+
     if (playable instanceof Playlist) {
       if (!playable.songs || playable.songs.length === 0) {
         await interaction.editReply("Playlist is empty!").catch(ignore([UNKNOWN_MESSAGE]));
@@ -76,13 +79,13 @@ module.exports = {
       }
 
       try {
-        await queue.playlist(playable);
+        await queue.playlist(playable, queueOptions);
       } catch (err) {
         await interaction.editReply("Error playing playlist!").catch(ignore([UNKNOWN_MESSAGE]));
         return;
       }
 
-      let editedMessage = await interaction.editReply(`🗳️  Added **${utils.playableToString(playable)}** to the queue (${playable.songs.length} songs)!`).catch(ignore([UNKNOWN_MESSAGE]));
+      let editedMessage = await interaction.editReply(`🗳️  Added **${utils.playableToString(playable)}** to the top of the queue (${playable.songs.length} songs)!`).catch(ignore([UNKNOWN_MESSAGE]));
       if (editedMessage) {
         await editedMessage.suppressEmbeds(true).catch(ignore([UNKNOWN_MESSAGE]));
       }
@@ -95,7 +98,7 @@ module.exports = {
       }
     } else if (playable instanceof Song) {
       try {
-        await queue.play(playable);
+        await queue.play(playable, queueOptions);
       } catch (err) {
         await interaction.editReply("Error playing song!").catch(ignore([UNKNOWN_MESSAGE]));
         return;
@@ -104,7 +107,7 @@ module.exports = {
       let editedMessage = await interaction.editReply(
         (queue.songs && queue.songs.length === 1) ? 
             `▶️  Now playing **${utils.playableToString(playable)}**!` :
-            `🗳️  Added **${utils.playableToString(playable)}** to the queue!`).catch(ignore([UNKNOWN_MESSAGE]));
+            `🗳️  Added **${utils.playableToString(playable)}** to the top of the queue!`).catch(ignore([UNKNOWN_MESSAGE]));
       if (editedMessage) {
         await editedMessage.suppressEmbeds(true).catch(ignore([UNKNOWN_MESSAGE]));
       }
