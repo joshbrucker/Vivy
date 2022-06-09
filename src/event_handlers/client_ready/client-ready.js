@@ -4,7 +4,7 @@ const { REST } = require("@discordjs/rest");
 const Commands = require(__basedir + "/commands/Commands.js");
 const auth = require(__basedir + "/auth.json");
 
-function onClientReady(client) {
+module.exports = (client) => {
   const rest = new REST({ version: "10" }).setToken(auth.token);
   const commandJSONs = Commands.map(command => command.data);
 
@@ -12,6 +12,4 @@ function onClientReady(client) {
       .catch(console.error);
 
   console.log("I'm ready to perform~!");
-}
-
-module.exports = onClientReady;
+};
