@@ -25,7 +25,7 @@ module.exports = (client) => {
     .on('songFirst',  (queue, song) => {})
     .on('clientDisconnect', (queue) => {})
     .on('clientUndeafen', (queue) => {})
-    .on('error', (error, queue) => {});
+    .on('error', (error, queue) => { console.log(error); });
 
   return player;
 };

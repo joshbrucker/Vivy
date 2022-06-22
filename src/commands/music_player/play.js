@@ -1,4 +1,4 @@
-const { Permissions, Constants: { APIErrors: { UNKNOWN_MESSAGE } } } = require("discord.js");
+const { Permissions, Constants: { APIErrors: { UNKNOWN_MESSAGE }}} = require("discord.js");
 const { ignore } = require("@joshbrucker/discordjs-utils");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { Utils, DefaultPlayOptions, DefaultPlaylistOptions, Playlist, Song } = require("discord-music-player");
@@ -40,7 +40,12 @@ module.exports = {
       return;
     }
 
-    await interaction.deferReply();
+    try {
+      await interaction.deferReply();
+    } catch (err) {
+      // if the interaction fails being deferred, just abort (most likely it was deleted)
+      return;
+    }
 
     let search = interaction.options.get("search").value;
     let shuffle = interaction.options.get("shuffle") ? interaction.options.get("shuffle").value : false;
