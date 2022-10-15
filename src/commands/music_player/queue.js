@@ -2,8 +2,8 @@ const { MessageEmbed } = require("discord.js");
 const { PagedEmbed } = require("@joshbrucker/discordjs-utils");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
-const colors = require(__basedir + "/resources/colors.json");
-const { playableToString } = require(__basedir + "/utils/utils.js");
+const colors = require(global.__basedir + "/resources/colors.json");
+const { playableToString } = require(global.__basedir + "/utils/utils.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -40,7 +40,7 @@ module.exports = {
       }
     }
 
-    await new PagedEmbed({ timeout: 300000 }).send(interaction, pagedResponseData, [__basedir + "/resources/images/vivy_head.png"]);
+    await new PagedEmbed({ timeout: 300000 }).send(interaction, pagedResponseData, [ global.__basedir + "/resources/images/vivy_head.png" ]);
 
     function generateEmbed(description) {
       return new MessageEmbed()
@@ -48,7 +48,7 @@ module.exports = {
           .setDescription(description)
           .setFooter({ text: "   •   Fulfilling my mission ❤️" })
           .setThumbnail("attachment://vivy_head.png")
-          .setColor(colors.vivy)
+          .setColor(colors.vivy);
     }
   }
 };

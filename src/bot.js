@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef
 global.__basedir = __dirname;
 
 const Discord = require("discord.js");
@@ -8,6 +9,7 @@ const auth = require("./auth.json");
 
 const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGE_REACTIONS", "GUILD_VOICE_STATES"] });
 
+// eslint-disable-next-line no-undef
 process.on("unhandledRejection", (error) => eventHandler.onUnhandledRejection(error));
 
 client.player = createMusicPlayer(client);

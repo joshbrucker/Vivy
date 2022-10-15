@@ -3,7 +3,7 @@ const { ignore } = require("@joshbrucker/discordjs-utils");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { Utils, DefaultPlayOptions, DefaultPlaylistOptions, Playlist, Song } = require("discord-music-player");
 
-const utils = require(__basedir + "/utils/utils");
+const utils = require(global.__basedir + "/utils/utils");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -65,13 +65,16 @@ module.exports = {
     let isPlaylist = utils.isPlaylist(search);
     try {
       playable = isPlaylist ?
-        await Utils.playlist(search, {...DefaultPlaylistOptions, shuffle: shuffle }, queue) :
+        await Utils.playlist(search, { ...DefaultPlaylistOptions, shuffle: shuffle }, queue) :
         await Utils.best(search, DefaultPlayOptions, queue);
-    } finally {
-      if (!playable) {
-        await interaction.editReply(`Cannot find that ${isPlaylist ? "playlist" : "song"}!`).catch(ignore([UNKNOWN_MESSAGE]));
-        return;
-      }
+    } catch (err) {
+      await interaction.editReply(`Error while searching for ${isPlaylist ? "playlist" : "song"}!`).catch(ignore([ UNKNOWN_MESSAGE ]));
+      return;
+    }
+
+    if (!playable) {
+      await interaction.editReply(`Cannot find that ${isPlaylist ? "playlist" : "song"}!`).catch(ignore([ UNKNOWN_MESSAGE ]));
+      return;
     }
 
     // try to play the playable
@@ -79,45 +82,45 @@ module.exports = {
 
     if (playable instanceof Playlist) {
       if (!playable.songs || playable.songs.length === 0) {
-        await interaction.editReply("Playlist is empty!").catch(ignore([UNKNOWN_MESSAGE]));
+        await interaction.editReply("Playlist is empty!").catch(ignore([ UNKNOWN_MESSAGE ]));
         return;
       }
 
       try {
         await queue.playlist(playable, queueOptions);
       } catch (err) {
-        await interaction.editReply("Error playing playlist!").catch(ignore([UNKNOWN_MESSAGE]));
+        await interaction.editReply("Error playing playlist!").catch(ignore([ UNKNOWN_MESSAGE ]));
         return;
       }
 
-      let editedMessage = await interaction.editReply(`🗳️  Added **${utils.playableToString(playable)}** to the top of the queue (${playable.songs.length} songs)!`).catch(ignore([UNKNOWN_MESSAGE]));
+      let editedMessage = await interaction.editReply(`🗳️  Added **${utils.playableToString(playable)}** to the top of the queue (${playable.songs.length} songs)!`).catch(ignore([ UNKNOWN_MESSAGE ]));
       if (editedMessage) {
-        await editedMessage.suppressEmbeds(true).catch(ignore([UNKNOWN_MESSAGE]));
+        await editedMessage.suppressEmbeds(true).catch(ignore([ UNKNOWN_MESSAGE ]));
       }
 
       if (queue.songs.length === playable.songs.length) {
-        let followUp = await interaction.followUp(`▶️  Now playing **${utils.playableToString(queue.songs[0])}**!`).catch(ignore([UNKNOWN_MESSAGE]));
+        let followUp = await interaction.followUp(`▶️  Now playing **${utils.playableToString(queue.songs[0])}**!`).catch(ignore([ UNKNOWN_MESSAGE ]));
         if (followUp) {
-          await followUp.suppressEmbeds(true).catch(ignore([UNKNOWN_MESSAGE]));
+          await followUp.suppressEmbeds(true).catch(ignore([ UNKNOWN_MESSAGE ]));
         }
       }
     } else if (playable instanceof Song) {
       try {
         await queue.play(playable, queueOptions);
       } catch (err) {
-        await interaction.editReply("Error playing song!").catch(ignore([UNKNOWN_MESSAGE]));
+        await interaction.editReply("Error playing song!").catch(ignore([ UNKNOWN_MESSAGE ]));
         return;
       }
 
       let editedMessage = await interaction.editReply(
-        (queue.songs && queue.songs.length === 1) ? 
-            `▶️  Now playing **${utils.playableToString(playable)}**!` :
-            `🗳️  Added **${utils.playableToString(playable)}** to the top of the queue!`).catch(ignore([UNKNOWN_MESSAGE]));
+        (queue.songs?.length === 1) ? 
+          `▶️  Now playing **${utils.playableToString(playable)}**!` :
+          `🗳️  Added **${utils.playableToString(playable)}** to the top of the queue!`).catch(ignore([ UNKNOWN_MESSAGE ]));
       if (editedMessage) {
-        await editedMessage.suppressEmbeds(true).catch(ignore([UNKNOWN_MESSAGE]));
+        await editedMessage.suppressEmbeds(true).catch(ignore([ UNKNOWN_MESSAGE ]));
       }
     } else {
-      await interaction.editReply(`Could not play ${isPlaylist ? "playlist" : "song"}`).catch(ignore([UNKNOWN_MESSAGE]));
+      await interaction.editReply(`Could not play ${isPlaylist ? "playlist" : "song"}`).catch(ignore([ UNKNOWN_MESSAGE ]));
     }
   },
 };

@@ -1,15 +1,15 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
-const { playableToString } = require(__basedir + "/utils/utils");
+const { playableToString } = require(global.__basedir + "/utils/utils");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("remove")
-    .setDescription("Removes a song from the queue.")
-    .addIntegerOption(option => option
-        .setName("number")
-        .setDescription("Song number to remove")
-        .setRequired(true)),
+      .setName("remove")
+      .setDescription("Removes a song from the queue.")
+      .addIntegerOption(option => option
+          .setName("number")
+          .setDescription("Song number to remove")
+          .setRequired(true)),
 
   async execute(interaction) {
     let player = interaction.client.player;
@@ -21,7 +21,7 @@ module.exports = {
       return;
     }
 
-    if (!queue || !queue.songs || queue.songs.length === 0) {
+    if (!queue?.songs || queue.songs.length === 0) {
       await interaction.reply("There is nothing playing!");
       return;
     }

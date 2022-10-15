@@ -19,11 +19,11 @@ function getMonthName(num) {
 
 function isPlaylist(search) {
   return Utils.regexList.SpotifyPlaylist.test(search) ||
-      Utils.regexList.YouTubePlaylist.test(search) ||
-      Utils.regexList.ApplePlaylist.test(search);
+    Utils.regexList.YouTubePlaylist.test(search) ||
+    Utils.regexList.ApplePlaylist.test(search);
 }
 
-function playableToString(playable, includeLink=true) {
+function playableToString(playable, includeLink = true) {
   if (includeLink && playable.url) {
     return `[${escapeMarkdown(playable.name)}](${playable.url})`;
   }

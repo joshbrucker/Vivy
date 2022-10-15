@@ -19,10 +19,14 @@
   "dependencies": {
     "@discordjs/rest": "^0.2.0-canary.0",
     "@joshbrucker/discordjs-utils": "^0.2.0",
-    "discord-music-player": "^8.3.2",
+    "discord-music-player": "^9.1.1",
     "discord.js": "^13.8.0",
     "gm": "^1.23.1",
+    "isomorphic-unfetch": "^3.1.0",
     "topgg-autoposter": "^2.0.1",
-    "ytdl-core": "^4.11.0"
+    "ytdl-core": "^4.11.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.24.0"
   }
 }
