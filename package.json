@@ -20,7 +20,7 @@
     "@discordjs/rest": "^0.2.0-canary.0",
     "@joshbrucker/discordjs-utils": "^0.2.0",
     "discord-music-player": "^9.1.1",
-    "discord.js": "^13.8.0",
+    "discord.js": "^13.14.0",
     "gm": "^1.23.1",
     "isomorphic-unfetch": "^3.1.0",
     "topgg-autoposter": "^2.0.1",
