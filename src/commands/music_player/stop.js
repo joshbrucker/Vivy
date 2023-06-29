@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
+const { usePlayer } = require("discord-player");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -11,16 +12,16 @@ module.exports = {
       return;
     }
 
-    let player = interaction.client.player;
     let guild = interaction.guild;
-    let queue = player.getQueue(guild.id);
+    let guildPlayerNode = usePlayer(guild.id);
+    let queue = guildPlayerNode?.queue;
 
-    if (!queue || !queue.songs || queue.songs.length === 0) {
+    if (!queue?.currentTrack) {
       await interaction.reply("There is nothing playing!");
       return;
     }
 
-    await queue.stop();
-    await interaction.reply("⏹️  Stopped the music player!");
+    await interaction.reply(":stop_button:  Stopped the music player!");
+    guildPlayerNode.stop();
   }
 };

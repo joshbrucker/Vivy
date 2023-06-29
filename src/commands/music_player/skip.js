@@ -1,4 +1,8 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
+const { usePlayer } = require("discord-player");
+const { MessageFlags } = require("discord.js");
+
+const utils = require(global.__basedir + "/utils/utils");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -11,20 +15,27 @@ module.exports = {
       return;
     }
 
-    let player = interaction.client.player;
     let guild = interaction.guild;
-    let queue = player.getQueue(guild.id);
+    let guildPlayerNode = usePlayer(guild.id);
+    let queue = guildPlayerNode?.queue;
 
-    if (!queue || !queue.songs || queue.songs.length === 0) {
+    if (!queue?.currentTrack) {
       await interaction.reply("There is nothing playing!");
       return;
     }
 
-    await queue.skip();
-    if (queue.songs.length > 1)  {
-      interaction.reply(`⏩  Skipping song... Now playing **${queue.songs[1]}**`);
+    let initialQueueSize = queue.size;
+
+    guildPlayerNode.skip();
+
+    if (initialQueueSize > 0)  {
+      await interaction.reply({
+        content: `:fast_forward:  Skipping song... Now playing **${utils.playableToString(queue.tracks.at(0))}**`,
+        fetchReply: true,
+        flags: [ MessageFlags.SuppressEmbeds ]
+      });
     } else {
-      interaction.reply("⏩  Skipping song... Reached end of queue!");
+      await interaction.reply(":fast_forward:  Skipping song... Reached end of queue!");
     }
   }
 };

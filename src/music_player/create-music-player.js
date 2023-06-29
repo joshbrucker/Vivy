@@ -1,30 +1,21 @@
-const { Player } = require("discord-music-player");
+const { YouTubeExtractor } = require("@discord-player/extractor");
+const { Player } = require("discord-player");
 
 const auth = require(global.__basedir + "/auth.json");
 
-module.exports = (client) => {
+module.exports = async (client) => {
   let player = new Player(client, {
-    leaveOnEnd: true,
-    leaveOnStop: false,
-    leaveOnEmpty: true,
-    timeout: 600000,
-    ytdlRequestOptions: {
-      headers: {
-        cookie: auth["youtubeCookie"],
-      },
+    connectionTimeout: 600000,
+    ytdlOptions: {
+      requestOptions: {
+        headers: {
+          cookie: auth["youtubeCookie"],
+        }
+      }
     }
   });
 
-  player.on("channelEmpty", (queue) => { })
-      .on("songAdd", (queue, song) => { })
-      .on("playlistAdd", (queue, playlist) => { })
-      .on("queueDestroyed", (queue) => { })
-      .on("queueEnd", (queue) => { })
-      .on("songChanged", (queue, newSong, oldSong) => { })
-      .on("songFirst", (queue, song) => { })
-      .on("clientDisconnect", (queue) => { })
-      .on("clientUndeafen", (queue) => { })
-      .on("error", (error, queue) => { console.log(error); });
+  await player.extractors.register(YouTubeExtractor, {});
 
   return player;
 };

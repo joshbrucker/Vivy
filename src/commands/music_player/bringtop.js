@@ -2,17 +2,15 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const { usePlayer } = require("discord-player");
 const { MessageFlags } = require("discord.js");
 
+const utils = require(global.__basedir + "/utils/utils");
+
 module.exports = {
   data: new SlashCommandBuilder()
-      .setName("swap")
-      .setDescription("Swaps the position of two songs in the queue.")
+      .setName("bringtop")
+      .setDescription("Brings a song to the top of the queue.")
       .addIntegerOption(option => option
-          .setName("first")
-          .setDescription("First song number to remove")
-          .setRequired(true))
-      .addIntegerOption(option => option
-          .setName("second")
-          .setDescription("Second song number to remove")
+          .setName("song_number")
+          .setDescription("Song number to bring to the top of the queue")
           .setRequired(true)),
 
   async execute(interaction) {
@@ -30,22 +28,24 @@ module.exports = {
       return;
     }
 
-    let first = interaction.options.get("first").value;
-    let second = interaction.options.get("second").value;
+    let songNumber = interaction.options.get("song_number").value;
     let queueSize = queue.size;
 
     let invalidNums = [];
-    if (first < 1 || first > queueSize) invalidNums.push(first);
-    if (second < 1 || second > queueSize) invalidNums.push(second);
+    if (songNumber < 1 || songNumber > queueSize) {
+      invalidNums.push(songNumber);
+    }
+
     if (invalidNums.length > 0) {
       await interaction.reply(`Invalid queue number${invalidNums.length > 1 ? "s" : ""}: [ **${invalidNums.join(", ")}** ]`);
       return;
     }
 
-    queue.swapTracks(first - 1, second - 1);
+    let trackToMove = queue.tracks.at(songNumber - 1);
+    queue.moveTrack(trackToMove, 0);
 
     await interaction.reply({
-      content: `:arrows_counterclockwise:  Swapped song positions **[${first}]**  :left_right_arrow:  **[${second}]**`,
+      content: `:arrow_up:  Brought song **[${songNumber}] ${utils.playableToString(trackToMove)}** to the top of the queue!`,
       flags: [ MessageFlags.SuppressEmbeds ]
     });
   }

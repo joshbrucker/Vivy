@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
+const { usePlayer } = require("discord-player");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -11,21 +12,22 @@ module.exports = {
       return;
     }
 
-    let player = interaction.client.player;
     let guild = interaction.guild;
-    let queue = player.getQueue(guild.id);
+    let guildPlayerNode = usePlayer(guild.id);
+    let queue = guildPlayerNode?.queue;
 
-    if (!queue || !queue.songs || queue.songs.length === 0) {
+    if (!queue?.currentTrack) {
       await interaction.reply("There is nothing playing!");
       return;
     }
 
-    if (!queue.paused) {
+    if (!guildPlayerNode.isPaused()) {
       await interaction.reply("The music player is already resumed!");
       return;
     }
 
-    await queue.setPaused(false);
-    await interaction.reply("⏯️  Resumed the music player!");
+    guildPlayerNode.resume();
+
+    await interaction.reply(":play_pause:  Resumed the music player!");
   }
 };

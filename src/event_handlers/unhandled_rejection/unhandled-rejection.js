@@ -6,4 +6,4 @@ module.exports = (error) => {
   } else {
     console.log(error);
   }
-}
+};
