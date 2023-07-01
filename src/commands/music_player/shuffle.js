@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
+const { usePlayer } = require("discord-player");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -6,21 +7,17 @@ module.exports = {
       .setDescription("Shuffles the queue."),
 
   async execute(interaction) {
-    let player = interaction.client.player;
     let guild = interaction.guild;
-    let queue = player.getQueue(guild.id);
+    let guildPlayerNode = usePlayer(guild.id);
+    let queue = guildPlayerNode?.queue;
 
-    if (!interaction.member.voice.channel) {
-      await interaction.reply("You must be in voice to use this command!");
-      return;
-    }
-
-    if (!queue || !queue.songs || queue.songs.length === 0) {
+    if (!queue?.currentTrack) {
       await interaction.reply("There is nothing playing!");
       return;
     }
 
-    queue.shuffle();
-    await interaction.reply("🔀  Queue has been shuffled!");
+    queue.tracks.shuffle();
+
+    await interaction.reply(":twisted_rightwards_arrows:  Queue has been shuffled!");
   }
 };

@@ -1,7 +1,5 @@
-const { Utils } = require("discord-music-player");
-
 function escapeMarkdown(text) {
-  return text.replace(/((\_|\*|\~|\`|\|){2})/g, '\\$1');
+  return text.replace(/((_|\*|~|`|\|){2})/g, "\\$1");
 }
 
 function getMonthName(num) {
@@ -17,18 +15,12 @@ function getMonthName(num) {
   }
 }
 
-function isPlaylist(search) {
-  return Utils.regexList.SpotifyPlaylist.test(search) ||
-    Utils.regexList.YouTubePlaylist.test(search) ||
-    Utils.regexList.ApplePlaylist.test(search);
-}
-
 function playableToString(playable, includeLink = true) {
   if (includeLink && playable.url) {
-    return `[${escapeMarkdown(playable.name)}](${playable.url})`;
+    return `[${escapeMarkdown(playable.title)}](${playable.url})`;
   }
 
-  return escapeMarkdown(playable.name);
+  return escapeMarkdown(playable.title);
 }
 
 async function random(num) {
@@ -38,7 +30,6 @@ async function random(num) {
 module.exports = {
   escapeMarkdown,
   getMonthName,
-  isPlaylist,
   random,
   playableToString
 };

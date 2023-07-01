@@ -2,17 +2,23 @@
 global.__basedir = __dirname;
 
 const Discord = require("discord.js");
+const { GatewayIntentBits } = require("discord-api-types/gateway/v10");
 
 const eventHandler = require("./event_handlers/event-handler.js");
-const createMusicPlayer = require("./music_player/create-music-player.js");
 const auth = require("./auth.json");
 
-const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGE_REACTIONS", "GUILD_VOICE_STATES"] });
+
+const client = new Discord.Client({ intents: [
+  GatewayIntentBits.Guilds,
+  GatewayIntentBits.GuildMessageReactions,
+  GatewayIntentBits.GuildVoiceStates
+]});
 
 // eslint-disable-next-line no-undef
 process.on("unhandledRejection", (error) => eventHandler.onUnhandledRejection(error));
 
-client.player = createMusicPlayer(client);
+// eslint-disable-next-line no-undef
+// process.on("SIGINT", async () => await eventHandler.onProcessClose(client));
 
 // Set client event handlers
 client.on("ready", () => eventHandler.onClientReady(client));

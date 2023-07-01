@@ -1,8 +1,10 @@
-const { Permissions, Constants: { APIErrors: { UNKNOWN_MESSAGE }}} = require("discord.js");
-const { ignore } = require("@joshbrucker/discordjs-utils");
+const { RESTJSONErrorCodes: { UnknownMessage }} = require("discord-api-types/rest/v10");
+const { PermissionsBitField, MessageFlags } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { Utils, DefaultPlayOptions, DefaultPlaylistOptions, Playlist, Song } = require("discord-music-player");
+const { useQueue } = require("discord-player");
+const { ignore } = require("@joshbrucker/discordjs-utils");
 
+const settings = require(global.__basedir + "/settings.json");
 const utils = require(global.__basedir + "/utils/utils");
 
 module.exports = {
@@ -19,23 +21,23 @@ module.exports = {
           .setRequired(false)),
 
   async execute(interaction) {
-    let voiceChannel = interaction.member.voice.channel;
+    let voiceChannel = interaction.member.voice?.channel;
     if (!voiceChannel) {
       await interaction.reply("You must be in voice to use this command!");
       return;
     }
 
-    if (!voiceChannel.permissionsFor(interaction.guild.me).has(Permissions.FLAGS.VIEW_CHANNEL)) {
+    if (!voiceChannel.permissionsFor(interaction.guild.members.me).has(PermissionsBitField.Flags.ViewChannel)) {
       await interaction.reply("I don't have permission to **view** this voice channel!");
       return;
     }
 
-    if (!voiceChannel.permissionsFor(interaction.guild.me).has(Permissions.FLAGS.CONNECT)) {
+    if (!voiceChannel.permissionsFor(interaction.guild.members.me).has(PermissionsBitField.Flags.Connect)) {
       await interaction.reply("I don't have permission to **join** this voice channel!");
       return;
     }
 
-    if (!voiceChannel.permissionsFor(interaction.guild.me).has(Permissions.FLAGS.SPEAK)) {
+    if (!voiceChannel.permissionsFor(interaction.guild.members.me).has(PermissionsBitField.Flags.Speak)) {
       await interaction.reply("I don't have permission to **speak** in this voice channel!");
       return;
     }
@@ -43,81 +45,73 @@ module.exports = {
     try {
       await interaction.deferReply();
     } catch (err) {
-      // if the interaction fails being deferred, just abort (most likely it was deleted)
+      // If the interaction fails being deferred... just abort
       return;
     }
 
-    let search = interaction.options.get("search").value;
+    let searchQuery = interaction.options.get("search").value;
     let shuffle = interaction.options.get("shuffle") ? interaction.options.get("shuffle").value : false;
-
-    let player = interaction.client.player;
     let guild = interaction.guild;
 
-    let queue = player.getQueue(guild.id);
-    if (!queue) {
-      queue = player.createQueue(guild.id);
-    }
+    let player = interaction.client.player;
 
-    await queue.join(interaction.member.voice.channel);
-
-    // search for a playable, given a search query
-    let playable;
-    let isPlaylist = utils.isPlaylist(search);
-    try {
-      playable = isPlaylist ?
-        await Utils.playlist(search, { ...DefaultPlaylistOptions, shuffle: shuffle }, queue) :
-        await Utils.best(search, DefaultPlayOptions, queue);
-    } catch (err) {
-      await interaction.editReply(`Error while searching for ${isPlaylist ? "playlist" : "song"}!`).catch(ignore([ UNKNOWN_MESSAGE ]));
+    let searchResult = await player.search(searchQuery).catch(() => null);
+    if (!searchResult || searchResult.isEmpty()) {
+      await interaction.editReply(`No search results for ${searchQuery}!`).catch(ignore([ UnknownMessage ]));
       return;
     }
 
-    if (!playable) {
-      await interaction.editReply(`Cannot find that ${isPlaylist ? "playlist" : "song"}!`).catch(ignore([ UNKNOWN_MESSAGE ]));
-      return;
+    // Shuffle playlist tracks before adding to queue, if requested
+    if (searchResult.hasPlaylist() && shuffle) {
+      let playlist = searchResult.playlist;
+      let tracks = playlist.tracks;
+      for (let i = tracks.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [ tracks[i], tracks[j] ] = [ tracks[j], tracks[i] ];
+      }
+
+      playlist.tracks = tracks;
     }
 
-    if (playable instanceof Playlist) {
-      if (!playable.songs || playable.songs.length === 0) {
-        await interaction.editReply("Playlist is empty!").catch(ignore([ UNKNOWN_MESSAGE ]));
-        return;
-      }
-
-      try {
-        await queue.playlist(playable);
-      } catch (err) {
-        await interaction.editReply("Error playing playlist!").catch(ignore([ UNKNOWN_MESSAGE ]));
-        return;
-      }
-
-      let editedMessage = await interaction.editReply(`🗳️  Added **${utils.playableToString(playable)}** to the queue (${playable.songs.length} songs)!`).catch(ignore([ UNKNOWN_MESSAGE ]));
-      if (editedMessage) {
-        await editedMessage.suppressEmbeds(true).catch(ignore([ UNKNOWN_MESSAGE ]));
-      }
-
-      if (queue.songs.length === playable.songs.length) {
-        let followUp = await interaction.followUp(`▶️  Now playing **${utils.playableToString(queue.songs[0])}**!`).catch(ignore([ UNKNOWN_MESSAGE ]));
-        if (followUp) {
-          await followUp.suppressEmbeds(true).catch(ignore([ UNKNOWN_MESSAGE ]));
+    const { track } = await player.play(
+      voiceChannel,
+      searchResult,
+      {
+        requestedBy: interaction.user,
+        nodeOptions: {
+          leaveOnEnd: settings.guildPlayerNode.leaveOnEnd,
+          leaveOnEndCooldown: settings.guildPlayerNode.leaveOnEndCooldown,
+          leaveOnEmpty: settings.guildPlayerNode.leaveOnEmpty,
+          leaveOnEmptyCooldown: settings.guildPlayerNode.leaveOnEmptyCooldown,
+          volume: 100,
+          metadata: {
+            channel: voiceChannel,
+            interaction: interaction,
+            timestamp: interaction.createdTimestamp
+          }
         }
       }
-    } else if (playable instanceof Song) {
-      try {
-        await queue.play(playable);
-      } catch (err) {
-        await interaction.editReply("Error playing song!").catch(ignore([ UNKNOWN_MESSAGE ]));
-        return;
-      }
+    );
 
-      let editedMessage = await interaction.editReply(
-        (queue.songs?.length === 1) ? 
-          `▶️  Now playing **${utils.playableToString(playable)}**!` :
-          `🗳️  Added **${utils.playableToString(playable)}** to the queue!`).catch(ignore([ UNKNOWN_MESSAGE ]));
-      if (editedMessage) {
-        await editedMessage.suppressEmbeds(true).catch(ignore([ UNKNOWN_MESSAGE ]));
-      }
+    let queue = useQueue(guild.id);
+
+    let message;
+    if (searchResult.hasPlaylist()) {
+      // If adding a playlist, include playlist name and length in reply
+      let playlist = searchResult.playlist;
+      message = `:ballot_box:  Added **${utils.playableToString(playlist)}** to the queue (${playlist.tracks.length} songs)`;
     } else {
-      await interaction.editReply(`Could not play ${isPlaylist ? "playlist" : "song"}`).catch(ignore([ UNKNOWN_MESSAGE ]));
+      // If queue is empty, song is currently playing, otherwise, it's been added to the queue
+      if (queue.size === 0) {
+        message = `:arrow_forward:  Now playing **${utils.playableToString(track)}**`;
+      } else {
+        message = `:ballot_box:  Added **${utils.playableToString(track)}** to the queue`;
+      }
     }
+
+    await interaction.editReply({
+      content: message,
+      flags: [ MessageFlags.SuppressEmbeds ]
+    }).catch(ignore([ UnknownMessage ]));
   },
 };
