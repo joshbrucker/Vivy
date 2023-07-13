@@ -29,7 +29,7 @@ module.exports = {
     }
 
     let index = interaction.options.get("number").value;
-    if (index < 1 || index >= queue.size) {
+    if (index < 1 || index > queue.size) {
       await interaction.reply("Invalid queue number!");
       return;
     }
