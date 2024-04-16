@@ -9,7 +9,8 @@ module.exports = async (client) => {
     ytdlOptions: {
       requestOptions: {
         headers: {
-          cookie: auth["youtubeCookie"],
+          cookie: auth["youtubeCookies"],
+          "x-youtube-identity-token": auth["youtubeIdToken"]
         }
       }
     }
