@@ -22,6 +22,7 @@
     "@joshbrucker/discordjs-utils": "^0.3.1",
     "discord-api-types": "^0.37.65",
     "discord-player": "^6.6.6",
+    "discord-player-youtubei": "^1.1.10",
     "discord.js": "^14.14.1",
     "ffmpeg-static": "^5.2.0",
     "gm": "^1.23.1",
