@@ -1,5 +1,6 @@
 const { YoutubeiExtractor } = require("discord-player-youtubei");
 const { Player } = require("discord-player");
+const { ProxyAgent } = require("undici");
 
 const auth = require(global.__basedir + "/auth.json");
 const settings = require(global.__basedir + "/settings.json");
