@@ -1,8 +1,8 @@
-const { YoutubeiExtractor, createYoutubeiStream } = require("discord-player-youtubei");
-const { SpotifyExtractor } = require("@discord-player/extractor");
+const { YoutubeiExtractor } = require("discord-player-youtubei");
 const { Player } = require("discord-player");
 
 const auth = require(global.__basedir + "/auth.json");
+const settings = require(global.__basedir + "/settings.json");
 
 module.exports = async (client) => {
   let player = new Player(client, {
@@ -17,12 +17,11 @@ module.exports = async (client) => {
     }
   });
 
-  await player.extractors.register(YoutubeiExtractor, {
-    authentication: auth["youtubeOAuth"]
-  });
-  await player.extractors.register(SpotifyExtractor, {
-    createStream: createYoutubeiStream
-  });
+  youtubeiSettings = {
+    ...(settings.proxyAddress && { proxy: new ProxyAgent(settings.proxyAddress) })
+  };
+
+  await player.extractors.register(YoutubeiExtractor, youtubeiSettings);
 
   return player;
 };
