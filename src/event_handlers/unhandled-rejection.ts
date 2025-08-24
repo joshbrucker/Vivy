@@ -1,4 +1,5 @@
-module.exports = (error) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function onUnhandledRejection(error: any) {
   if (error.code === "ENOTFOUND") {
     console.log("No internet connection");
   } else if (error.code === "ECONNREFUSED") {
@@ -6,4 +7,4 @@ module.exports = (error) => {
   } else {
     console.log(error);
   }
-};
+}
