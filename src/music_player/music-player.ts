@@ -1,6 +1,7 @@
+// import { DefaultExtractors } from "@discord-player/extractor";
 import auth from "auth.json";
 import { Player } from "discord-player";
-import { YoutubeiExtractor, YoutubeiOptions } from "discord-player-youtubei";
+import { YoutubeExtractor, YoutubeOptions } from "discord-player-youtubei";
 import { Client } from "discord.js";
 import settings from "settings.json";
 import { ProxyAgent } from "undici";
@@ -13,15 +14,15 @@ export class MusicPlayer extends Player {
   }
 
   async registerYoutubeiExtractor() {
-    const youtubeiSettings: YoutubeiOptions = {
+    const youtubeiSettings: YoutubeOptions = {
       cookie: auth["youtubeCookies"],
-      generateWithPoToken: true,
     };
 
-    if (settings.proxyAddress) {
-      youtubeiSettings.proxy = new ProxyAgent(settings.proxyAddress);
+    youtubeiSettings.proxy = []
+    for (const url of settings.proxyAddress) {
+      youtubeiSettings.proxy.push(new ProxyAgent({ uri: url }));
     }
 
-    await this.extractors.register(YoutubeiExtractor, youtubeiSettings);
+    await this.extractors.register(YoutubeExtractor, youtubeiSettings);
   }
 }

@@ -44,8 +44,8 @@ export class ResumeCmd implements Command {
       return;
     }
 
-    if (player.isPaused()) {
-      await interaction.reply("The music player is already paused!");
+    if (!player.isPaused()) {
+      await interaction.reply("The music player is not paused!");
       return;
     }
 
