@@ -1,4 +1,4 @@
-import { CommandRegistry } from "commands/command-registry";
+import { CommandRegistry } from "../commands/command-registry";
 import { Client, Interaction } from "discord.js";
 
 export async function onInteractionCreate(

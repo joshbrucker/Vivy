@@ -1,3 +1,6 @@
+import settings from "../../settings.json";
+import { Command } from "../../types";
+import utils from "../../utils/utils";
 import { useMainPlayer, useQueue } from "discord-player";
 import {
   ChatInputCommandInteraction,
@@ -6,9 +9,6 @@ import {
   PermissionsBitField,
   SlashCommandBuilder,
 } from "discord.js";
-import settings from "settings.json";
-import { Command } from "types";
-import utils from "utils/utils";
 
 export class PlayTopCmd implements Command {
   readonly definition = new SlashCommandBuilder()

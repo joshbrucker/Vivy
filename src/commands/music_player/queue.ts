@@ -1,6 +1,9 @@
+import { images, colors } from "../../resources";
+import { Command } from "../../types";
+import utils from "../../utils/utils";
 import { PagedEmbed } from "@joshbrucker/discordjs-utils";
 import { DEFAULT_OPTIONS } from "@joshbrucker/discordjs-utils/lib/paging/PagedEmbedOptions";
-import { usePlayer, useQueue } from "discord-player";
+import { Track, usePlayer, useQueue } from "discord-player";
 import {
   SlashCommandBuilder,
   ChatInputCommandInteraction,
@@ -8,9 +11,6 @@ import {
   EmbedBuilder,
   ColorResolvable,
 } from "discord.js";
-import { images, colors } from "resources";
-import { Command } from "types";
-import utils from "utils/utils";
 
 export class QueueCmd implements Command {
   readonly definition = new SlashCommandBuilder()
@@ -54,7 +54,7 @@ export class QueueCmd implements Command {
     )}\n\n`;
 
     if (tracks.size === 0) {
-      pagedResponseData.push(generateEmbed(pageDescription));
+      pagedResponseData.push(generateEmbed(currentTrack, pageDescription));
     } else {
       for (let i = 1; i <= tracks.size; i++) {
         pageDescription += `**[${i}]**  ${utils.playableToString(
@@ -62,24 +62,26 @@ export class QueueCmd implements Command {
         )}\n\n`;
 
         if (i % SONGS_PER_PAGE === 0 || i >= tracks.size) {
-          pagedResponseData.push(generateEmbed(pageDescription));
+          pagedResponseData.push(generateEmbed(currentTrack, pageDescription));
           pageDescription = "";
         }
       }
     }
 
+    const attachments = currentTrack.thumbnail ? [] : [images.vivy];
+
     await new PagedEmbed({
       ...DEFAULT_OPTIONS,
       timeout: 300000,
       wrapAround: true,
-    }).send(interaction, pagedResponseData, [images.vivy]);
+    }).send(interaction, pagedResponseData, attachments);
 
-    function generateEmbed(description: string) {
+    function generateEmbed(currentTrack: Track, description: string) {
       return new EmbedBuilder()
         .setTitle("Music Queue")
         .setDescription(description)
         .setFooter({ text: "   •   Fulfilling my mission ❤️" })
-        .setThumbnail("attachment://vivy_head.png")
+        .setThumbnail(currentTrack.thumbnail || "attachment://vivy_head.png")
         .setColor(colors.vivy as ColorResolvable);
     }
   }

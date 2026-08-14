@@ -1,11 +1,11 @@
+import { Command } from "../../types";
+import utils from "../../utils/utils";
 import { usePlayer, useQueue } from "discord-player";
 import {
   ChatInputCommandInteraction,
   GuildMember,
   SlashCommandBuilder,
 } from "discord.js";
-import { Command } from "types";
-import utils from "utils/utils";
 
 export class StopCmd implements Command {
   readonly definition = new SlashCommandBuilder()

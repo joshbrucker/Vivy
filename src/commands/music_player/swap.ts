@@ -1,3 +1,5 @@
+import { Command } from "../../types";
+import utils from "../../utils/utils";
 import { useQueue } from "discord-player";
 import {
   SlashCommandBuilder,
@@ -5,8 +7,6 @@ import {
   GuildMember,
   MessageFlags,
 } from "discord.js";
-import { Command } from "types";
-import utils from "utils/utils";
 
 export class SwapCmd implements Command {
   readonly definition = new SlashCommandBuilder()

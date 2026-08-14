@@ -1,8 +1,8 @@
+import { Command } from "../../types";
+import utils from "../../utils/utils";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { useQueue } from "discord-player";
 import { ChatInputCommandInteraction, GuildMember } from "discord.js";
-import { Command } from "types";
-import utils from "utils/utils";
 
 export class ClearCmd implements Command {
   readonly definition = new SlashCommandBuilder()

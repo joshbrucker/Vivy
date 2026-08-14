@@ -1,5 +1,5 @@
+import { Command, SlashCommandDefinition } from "../types";
 import { CommandInteraction } from "discord.js";
-import { Command, SlashCommandDefinition } from "types";
 
 export class CommandRegistry {
   commandMap: Map<string, Command>;

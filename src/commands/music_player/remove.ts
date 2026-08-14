@@ -1,3 +1,5 @@
+import { Command } from "../../types";
+import utils from "../../utils/utils";
 import { useQueue } from "discord-player";
 import {
   ChatInputCommandInteraction,
@@ -5,8 +7,6 @@ import {
   MessageFlags,
   SlashCommandBuilder,
 } from "discord.js";
-import { Command } from "types";
-import utils from "utils/utils";
 
 export class RemoveCmd implements Command {
   readonly definition = new SlashCommandBuilder()

@@ -1,22 +1,22 @@
+import auth from "../auth.json";
+import { CommandRegistry } from "../commands/command-registry";
+import { BringTopCmd } from "../commands/music_player/bringtop";
+import { ClearCmd } from "../commands/music_player/clear";
+import { PauseCmd } from "../commands/music_player/pause";
+import { PlayCmd } from "../commands/music_player/play";
+import { PlayTopCmd } from "../commands/music_player/playtop";
+import { QueueCmd } from "../commands/music_player/queue";
+import { RemoveCmd } from "../commands/music_player/remove";
+import { ResumeCmd } from "../commands/music_player/resume";
+import { ShuffleCmd } from "../commands/music_player/shuffle";
+import { SkipCmd } from "../commands/music_player/skip";
+import { StopCmd } from "../commands/music_player/stop";
+import { SwapCmd } from "../commands/music_player/swap";
+import { MusicPlayer } from "../music_player/music-player";
+import settings from "../settings.json";
 import { REST } from "@discordjs/rest";
-import auth from "auth.json";
-import { CommandRegistry } from "commands/command-registry";
-import { BringTopCmd } from "commands/music_player/bringtop";
-import { ClearCmd } from "commands/music_player/clear";
-import { PauseCmd } from "commands/music_player/pause";
-import { PlayCmd } from "commands/music_player/play";
-import { PlayTopCmd } from "commands/music_player/playtop";
-import { QueueCmd } from "commands/music_player/queue";
-import { RemoveCmd } from "commands/music_player/remove";
-import { ResumeCmd } from "commands/music_player/resume";
-import { ShuffleCmd } from "commands/music_player/shuffle";
-import { SkipCmd } from "commands/music_player/skip";
-import { StopCmd } from "commands/music_player/stop";
-import { SwapCmd } from "commands/music_player/swap";
 import { Routes } from "discord-api-types/v10";
 import { Client } from "discord.js";
-import { MusicPlayer } from "music_player/music-player";
-import settings from "settings.json";
 
 export async function onClientReady(
   client: Client,

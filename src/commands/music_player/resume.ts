@@ -1,11 +1,11 @@
+import { Command } from "../../types";
+import utils from "../../utils/utils";
 import { useQueue, usePlayer } from "discord-player";
 import {
   ChatInputCommandInteraction,
   GuildMember,
   SlashCommandBuilder,
 } from "discord.js";
-import { Command } from "types";
-import utils from "utils/utils";
 
 export class ResumeCmd implements Command {
   readonly definition = new SlashCommandBuilder()

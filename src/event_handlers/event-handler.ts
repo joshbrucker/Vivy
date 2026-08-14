@@ -1,7 +1,7 @@
+import { CommandRegistry } from "../commands/command-registry";
 import { onClientReady } from "./client-ready";
 import { onInteractionCreate } from "./interaction-create";
 import { onUnhandledRejection } from "./unhandled-rejection";
-import { CommandRegistry } from "commands/command-registry";
 import { Client } from "discord.js";
 
 export class EventHandler {

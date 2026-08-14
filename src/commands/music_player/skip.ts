@@ -1,3 +1,5 @@
+import { Command } from "../../types";
+import utils from "../../utils/utils";
 import { useQueue, usePlayer } from "discord-player";
 import {
   SlashCommandBuilder,
@@ -5,8 +7,6 @@ import {
   GuildMember,
   MessageFlags,
 } from "discord.js";
-import { Command } from "types";
-import utils from "utils/utils";
 
 export class SkipCmd implements Command {
   readonly definition = new SlashCommandBuilder()
