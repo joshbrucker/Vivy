@@ -21,23 +21,29 @@
     "@discordjs/rest": "^2.6.0",
     "@joshbrucker/discordjs-utils": "^0.4.0",
     "@snazzah/davey": "^0.1.10",
+    "bgutils-js": "^4.0.3",
     "bufferutil": "^4.0.9",
     "discord-api-types": "^0.38.42",
     "discord-player": "^7.1.0",
-    "discord-player-youtubei": "github:joshbrucker/discord-player-youtubei#afaaf984cbb8b85293c3e3f2da3eda8f03397cf6",
+    "discord-player-youtubei": "^3.1.0-beta.0",
     "discord.js": "^14.18.0",
-    "gm": "^1.25.1",
+    "eslint": "^10.10.0",
+    "googlevideo": "^4.1.1",
     "mediaplex": "^1.0.0",
-    "zlib-sync": "^0.1.9"
+    "zlib-sync": "^0.1.10"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
-    "eslint": "^8.57.1",
     "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.39.0"
+  },
+  "allowScripts": {
+    "zlib-sync@0.1.10": true,
+    "esbuild": true,
+    "bufferutil": true
   }
 }

@@ -18,7 +18,7 @@ export class EventHandler {
   }
 
   listenForClientReady() {
-    this.client.on("ready", () =>
+    this.client.on("clientReady", () =>
       onClientReady(this.client, this.commandRegistry),
     );
   }
